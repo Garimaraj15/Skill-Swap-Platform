@@ -9,7 +9,7 @@ import path from "path"
 import { readFile } from "fs/promises"
 
 // Disable Next.js body parsing
-export const config = {
+export const routeSegmentConfig = {
   api: {
     bodyParser: false,
   },

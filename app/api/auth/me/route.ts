@@ -8,12 +8,7 @@ import { writeFile, mkdir } from "fs/promises"
 import path from "path"
 import { readFile } from "fs/promises"
 
-// Disable Next.js body parsing
-export const routeSegmentConfig = {
-  api: {
-    bodyParser: false,
-  },
-}
+
 
 // Helper to parse form data
 async function parseForm(req: Request): Promise<{

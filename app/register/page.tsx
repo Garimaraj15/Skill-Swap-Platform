@@ -32,12 +32,26 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const { register } = useAuth()
   const router = useRouter()
+  const [passwordError, setPasswordError] = useState("")
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target; 
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }))
+    // Validate password length
+  if (name === "password") {
+    if (value.length > 0 && value.length < 6) {
+      setPasswordError("Password must be at least 6 characters long.")
+    } else {
+      setPasswordError("")
+    }
+  }
+
+    
   }
 
   const addSkillOffered = () => {
@@ -65,6 +79,11 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long")
+      return
+    }
+
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match")
@@ -150,17 +169,29 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Enter your email"
-                  />
-                </div>
+  <Label htmlFor="email">Email</Label>
+  <Input
+    id="email"
+    name="email"
+    type="email"
+    value={formData.email}
+    onChange={handleInputChange}
+    onBlur={() => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (formData.email && !emailRegex.test(formData.email)) {
+        setError("Please enter a valid email address.")
+      } else {
+        setError("")
+      }
+    }}
+    required
+    placeholder="Enter your email"
+  />
+  {error && error.toLowerCase().includes("email") && (
+    <p className="text-sm text-red-600">{error}</p>
+  )}
+</div>
+
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,6 +206,9 @@ export default function RegisterPage() {
                     required
                     placeholder="Create a password"
                   />
+                  {passwordError && (
+                    <p className="text-sm text-red-500">{passwordError}</p>
+                  )}  
                 </div>
 
                 <div className="space-y-2">
